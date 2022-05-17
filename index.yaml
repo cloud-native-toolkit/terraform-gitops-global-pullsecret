@@ -1,0 +1,10 @@
+name: gitops-module-global-pullsecret
+type: gitops
+description: >-
+  Module to populate a gitops repo with the resources to provision
+  module-global-pullsecret
+tags:
+  - tools
+  - gitops
+versions: []
+id: github.com/cloud-native-toolkit/terraform-gitops-module-global-pullsecret
