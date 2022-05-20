@@ -21,13 +21,13 @@ spec:
             - mountPath: "/home/devops"
               name: ephemeral
           env:
-          - name: DOCKER_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.secret_name }}
-                optional: false
-          - DOCKER_USERNAME={{ .Values.docker_username }}
-          - DOCKER_SERVER={{ .Values.docker_server }}
+            - name: DOCKER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret_name }}
+                  optional: false
+            - DOCKER_USERNAME={{ .Values.docker_username }}
+            - DOCKER_SERVER={{ .Values.docker_server }}
 
           command:
             - /bin/sh
