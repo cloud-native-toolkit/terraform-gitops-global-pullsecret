@@ -83,12 +83,17 @@ oc get secret/${GLOBAL_SECRET} \
       -n ${OPENSHIFT_NAMESPACE} \
       --template='{{index .data ".dockerconfigjson" | base64decode}}' > ./global_pull_secret.cfg
 
+
+
+
+cat ./global_pull_secret.cfg
+
 if ! grep -Fxq "test-server" global_pull_secret.cfg; then
   echo "test-server key was not found"
+  sleep 5m
   exit 1
 fi
 
-cat ./global_pull_secret.cfg
 
 cd ..
 rm -rf .testrepo
