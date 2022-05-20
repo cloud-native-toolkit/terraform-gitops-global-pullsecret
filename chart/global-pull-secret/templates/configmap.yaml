@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: global-pull-secret-append-config
+data:
+  global-pull-secret-append.sh: |
+    #!/bin/bash
+
+    export WORK_ROOT=pwd
+
+    oc get secret/pull-secret \
+      -n openshift-config \
+      --template='{{index .data ".dockerconfigjson" | base64decode}}' > ${WORK_ROOT}/global_pull_secret.cfg
+
+    oc registry login \
+      --registry="${DOCKER_SERVER}" \
+      --auth-basic="${DOCKER_USERNAME}:${DOCKER_PASSWORD}" \
+      --to=${WORK_ROOT}/global_pull_secret.cfg
+
+    oc set data secret/pull-secret \
+      -n openshift-config \
+      --from-file=.dockerconfigjson=${WORK_ROOT}/global_pull_secret.cfg
+
+
+

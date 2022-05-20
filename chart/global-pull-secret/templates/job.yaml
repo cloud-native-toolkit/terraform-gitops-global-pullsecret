@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: global-pull-secret-append
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      volumes:
+        - name: scripts
+          configMap:
+            name: global-pull-secret-append-job
+            defaultMode: 0777
+        - name: ephemeral
+          emptyDir: {}
+      containers:
+        - name: job
+          volumeMounts:
+            - mountPath: /scripts
+              name: scripts
+            - mountPath: "/home/devops"
+              name: ephemeral
+          env:
+          - name: DOCKER_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.secret_name }}
+                optional: false
+            - DOCKER_USERNAME={{ .Values.docker_username }}
+            - DOCKER_SERVER={{ .Values.docker_server }}
+
+          command:
+            - /bin/sh
+          args:
+            - -c
+            - /scripts/global-pull-secret-append.sh

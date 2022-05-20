@@ -64,21 +64,31 @@ else
   sleep 30
 fi
 
-DEPLOYMENT="${COMPONENT_NAME}-${BRANCH}"
+GLOBAL_SECRET="pull-secret"
+OPENSHIFT_NAMESPACE="openshift-config"
 count=0
-until kubectl get deployment "${DEPLOYMENT}" -n "${NAMESPACE}" || [[ $count -eq 20 ]]; do
-  echo "Waiting for deployment/${DEPLOYMENT} in ${NAMESPACE}"
+until kubectl get secret "${GLOBAL_SECRET}" -n "${OPENSHIFT_NAMESPACE}" || [[ $count -eq 20 ]]; do
+  echo "Waiting for secret/${GLOBAL_SECRET} in ${OPENSHIFT_NAMESPACE}"
   count=$((count + 1))
   sleep 15
 done
 
 if [[ $count -eq 20 ]]; then
-  echo "Timed out waiting for deployment/${DEPLOYMENT} in ${NAMESPACE}"
-  kubectl get all -n "${NAMESPACE}"
+  echo "Timed out waiting for deployment/${GLOBAL_SECRET} in ${OPENSHIFT_NAMESPACE}"
+  kubectl get secret -n "${OPENSHIFT_NAMESPACE}"
   exit 1
 fi
 
-kubectl rollout status "deployment/${DEPLOYMENT}" -n "${NAMESPACE}" || exit 1
+oc get secret/${GLOBAL_SECRET} \
+      -n ${OPENSHIFT_NAMESPACE} \
+      --template='{{index .data ".dockerconfigjson" | base64decode}}' > ./global_pull_secret.cfg
+
+if ! grep -Fxq "test-server" global_pull_secret.cfg; then
+  echo "test-server key was not found"
+  exit 1
+fi
+
+cat ./global_pull_secret.cfg
 
 cd ..
 rm -rf .testrepo

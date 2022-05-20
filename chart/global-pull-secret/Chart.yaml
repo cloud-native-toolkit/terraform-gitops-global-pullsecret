@@ -1,0 +1,6 @@
+apiVersion: v2
+name: global-pull-secret-append
+description: Deployment of OpenShift Container Storage on ROKS Clusters via OpenShift Data Foundation
+type: application
+version: 0.1.0
+appVersion: "1.0"

@@ -1,9 +1,17 @@
 locals {
-  name          = "my-module"
+  default_secret_name = replace(replace("${var.docker_username}-${lower(var.docker_server)}", "/[^a-z0-9-.]/", "-"), "/-+/", "-")
+  secret_name   = var.secret_name != "" ? var.secret_name : local.default_secret_name
+  name          = local.secret_name
   bin_dir       = module.setup_clis.bin_dir
   yaml_dir      = "${path.cwd}/.tmp/${local.name}/chart/${local.name}"
   service_url   = "http://${local.name}.${var.namespace}"
+  namesspace    = "openshift-config"
+  tmp_dir      = "${path.cwd}/.tmp/tmp"
+
   values_content = {
+    docker_username = var.docker_username
+    docker_server = var.docker_server
+    secret_name = local.secret_name
   }
   layer = "services"
   type  = "base"
@@ -25,6 +33,30 @@ resource null_resource create_yaml {
     }
   }
 }
+
+resource null_resource create_secrets {
+  provisioner "local-exec" {
+    command = "${path.module}/scripts/create-secrets.sh '${local.secret_name}' '${var.namespace}' '${local.tmp_dir}'"
+
+    environment = {
+      DOCKER_PASSWORD = var.docker_password
+      NAMESPACE = var.namespace
+    }
+  }
+}
+
+
+module seal_secrets {
+  depends_on = [null_resource.create_secrets,null_resource.create_yaml]
+
+  source = "github.com/cloud-native-toolkit/terraform-util-seal-secrets.git"
+
+  source_dir    = local.tmp_dir
+  dest_dir      = "${local.yaml_dir}/templates"
+  kubeseal_cert = var.kubeseal_cert
+  label         = local.secret_name
+}
+
 
 resource null_resource setup_gitops {
   depends_on = [null_resource.create_yaml]

@@ -79,3 +79,25 @@ variable "server_name" {
   description = "The name of the server"
   default     = "default"
 }
+
+variable "docker_server" {
+  type        = string
+  description = "The location of the container registry"
+}
+
+variable "docker_username" {
+  type        = string
+  description = "The username for the container registry"
+}
+
+variable "docker_password" {
+  type        = string
+  description = "The password for the container registry"
+  sensitive   = true
+}
+
+variable "secret_name" {
+  type        = string
+  description = "The name of the secret"
+  default     = ""
+}
