@@ -3,7 +3,7 @@ locals {
   secret_name   = var.secret_name != "" ? var.secret_name : local.default_secret_name
   name          = local.secret_name
   bin_dir       = module.setup_clis.bin_dir
-  yaml_dir      = "${path.cwd}/.tmp/${local.name}/chart/${local.name}"
+  yaml_dir      = "${path.cwd}/.tmp/${local.name}/chart/global-pull-secret"
   service_url   = "http://${local.name}.${var.namespace}"
   namesspace    = "openshift-config"
   tmp_dir      = "${path.cwd}/.tmp/tmp"
