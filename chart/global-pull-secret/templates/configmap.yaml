@@ -10,7 +10,7 @@ data:
 
     oc get secret/pull-secret \
       -n openshift-config \
-      --template='{{index .data ".dockerconfigjson" | base64decode}}' > ${WORK_ROOT}/global_pull_secret.cfg
+      --template='{{ "{{" }}index .data ".dockerconfigjson" | base64decode {{ "}}" }}' > ${WORK_ROOT}/global_pull_secret.cfg
 
     oc registry login \
       --registry="${DOCKER_SERVER}" \
