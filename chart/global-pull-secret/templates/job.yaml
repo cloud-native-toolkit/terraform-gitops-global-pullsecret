@@ -15,6 +15,7 @@ spec:
           emptyDir: {}
       containers:
         - name: job
+          image: "quay.io/ibmgaragecloud/cli-tools:latest"
           volumeMounts:
             - mountPath: /scripts
               name: scripts
