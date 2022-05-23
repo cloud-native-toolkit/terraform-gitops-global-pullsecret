@@ -90,7 +90,7 @@ cat ./global_pull_secret.cfg
 
 if ! grep -Fxq "test-server" global_pull_secret.cfg; then
   echo "test-server key was not found"
-  sleep 5m
+  sleep 15m
   exit 1
 fi
 
