@@ -25,6 +25,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.secret_name }}
+                  key: {{ .Values.secret_name }}
                   optional: false
             - name: DOCKER_USERNAME
               value: {{ .Values.docker_username }}
