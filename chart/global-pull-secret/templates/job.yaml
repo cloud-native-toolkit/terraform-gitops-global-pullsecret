@@ -5,6 +5,7 @@ metadata:
 spec:
   template:
     spec:
+      serviceAccountName: global-pull-secret-sa
       restartPolicy: Never
       volumes:
         - name: scripts
