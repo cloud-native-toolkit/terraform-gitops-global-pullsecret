@@ -25,6 +25,7 @@ spec:
             - name: DOCKER_PASSWORD
               valueFrom:
                 secretKeyRef:
+                  name: docker-password
                   key: docker-password
                   optional: false
             - name: DOCKER_USERNAME
