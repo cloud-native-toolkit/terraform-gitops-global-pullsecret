@@ -79,6 +79,21 @@ if [[ $count -eq 20 ]]; then
   exit 1
 fi
 
+count=0
+until kubectl get job "global-pull-secret-append" -n "${NAMESPACE}" || [[ $count -eq 20 ]]; do
+  echo "Waiting for job/global-pull-secret-append in ${NAMESPACE}"
+  count=$((count + 1))
+  sleep 15
+done
+
+if [[ $count -eq 20 ]]; then
+  echo "Timed out waiting for job/global-pull-secret-append in ${NAMESPACE}"
+  kubectl get job "global-pull-secret-append" -n "${NAMESPACE}"
+  exit 1
+fi
+
+oc wait --for=condition=complete job/global-pull-secret-append --timeout=120s
+
 oc get secret/${GLOBAL_SECRET} \
       -n ${OPENSHIFT_NAMESPACE} \
       --template='{{index .data ".dockerconfigjson" | base64decode}}' > ./global_pull_secret.cfg
