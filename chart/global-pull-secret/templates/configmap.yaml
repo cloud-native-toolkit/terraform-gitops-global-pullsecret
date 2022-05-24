@@ -8,12 +8,11 @@ data:
 
     export WORK_ROOT=$(pwd)
 
-    oc get secret pull-secret \
-      -n openshift-config \
-      --template='{{ "{{" }}index .data ".dockerconfigjson" | base64decode {{ "}}" }}' > ${WORK_ROOT}/global_pull_secret.cfg
+    oc extract secret/pull-secret \
+      -n openshift-config
 
     echo "global_pull_secret:"
-    cat ${WORK_ROOT}/global_pull_secret.cfg
+    cat ${WORK_ROOT}/.dockerconfigjson
 
     echo "DOCKER_SERVER: $DOCKER_SERVER"
     echo "DOCKER_USERNAME: $DOCKER_USERNAME"
@@ -22,9 +21,9 @@ data:
     oc registry login \
       --registry="${DOCKER_SERVER}" \
       --auth-basic="${DOCKER_USERNAME}:${DOCKER_PASSWORD}" \
-      --to=${WORK_ROOT}/global_pull_secret.cfg
+      --to=${WORK_ROOT}/.dockerconfigjson
 
     oc set data secret/pull-secret \
       -n openshift-config \
-      --from-file=.dockerconfigjson=${WORK_ROOT}/global_pull_secret.cfg
+      --from-file=.dockerconfigjson=${WORK_ROOT}/.dockerconfigjson
 
