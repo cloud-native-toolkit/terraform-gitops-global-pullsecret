@@ -8,7 +8,7 @@ data:
 
     export WORK_ROOT=$(pwd)
 
-    oc get secret/pull-secret \
+    oc get secret pull-secret \
       -n openshift-config \
       --template='{{ "{{" }}index .data ".dockerconfigjson" | base64decode {{ "}}" }}' > ${WORK_ROOT}/global_pull_secret.cfg
 
@@ -30,3 +30,18 @@ data:
 
 
 
+error: there is no need to specify a resource type as a separate argument when passing arguments in resource/name form (e.g. 'oc get resource/<resource_name>' instead of 'oc get resource resource/<resource_name>'
+  7
+global_pull_secret:
+  6
+DOCKER_SERVER: test-server
+  5
+DOCKER_USERNAME: test-user
+  4
+DOCKER_PASSWORD: test-password
+  3
+  W0524 14:08:27.521665      29 login.go:354] Support for empty registry config files is deprecated. The support will be removed in the future version.
+  2
+  Saved credentials for test-server
+  1
+  secret/pull-secret data updated
