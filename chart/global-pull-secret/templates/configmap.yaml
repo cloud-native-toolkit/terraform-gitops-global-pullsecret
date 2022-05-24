@@ -6,7 +6,7 @@ data:
   global-pull-secret-append.sh: |
     #!/bin/bash
 
-    export WORK_ROOT=$pwd
+    export WORK_ROOT=$(pwd)
 
     oc get secret/pull-secret \
       -n openshift-config \
