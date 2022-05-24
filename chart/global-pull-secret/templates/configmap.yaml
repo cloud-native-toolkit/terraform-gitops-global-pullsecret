@@ -12,9 +12,12 @@ data:
       -n openshift-config \
       --template='{{ "{{" }}index .data ".dockerconfigjson" | base64decode {{ "}}" }}' > ${WORK_ROOT}/global_pull_secret.cfg
 
-    oc set data secret/pull-secret-backup \
-      -n openshift-config \
-      --from-file=.dockerconfigjson=${WORK_ROOT}/global_pull_secret.cfg
+    echo "global_pull_secret:
+    cat ${WORK_ROOT}/global_pull_secret.cfg
+
+    echo "DOCKER_SERVER: $DOCKER_SERVER"
+    echo "DOCKER_USERNAME: $DOCKER_USERNAME"
+    echo "DOCKER_PASSWORD: $DOCKER_PASSWORD"
 
     oc registry login \
       --registry="${DOCKER_SERVER}" \
