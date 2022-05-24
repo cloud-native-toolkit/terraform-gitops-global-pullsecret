@@ -92,20 +92,17 @@ if [[ $count -eq 20 ]]; then
   exit 1
 fi
 
-oc wait --for=condition=complete job/global-pull-secret-append --timeout=120s
+oc wait --for=condition=complete job/global-pull-secret-append -n "${NAMESPACE}" --timeout=120s
 
 oc get secret/${GLOBAL_SECRET} \
       -n ${OPENSHIFT_NAMESPACE} \
       --template='{{index .data ".dockerconfigjson" | base64decode}}' > ./global_pull_secret.cfg
 
-
-
-
+echo "Pull secret:"
 cat ./global_pull_secret.cfg
 
 if ! grep -Fxq "test-server" global_pull_secret.cfg; then
   echo "test-server key was not found"
-  sleep 5m
   exit 1
 fi
 

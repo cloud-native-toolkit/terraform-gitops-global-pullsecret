@@ -6,11 +6,15 @@ data:
   global-pull-secret-append.sh: |
     #!/bin/bash
 
-    export WORK_ROOT=pwd
+    export WORK_ROOT=$pwd
 
     oc get secret/pull-secret \
       -n openshift-config \
       --template='{{ "{{" }}index .data ".dockerconfigjson" | base64decode {{ "}}" }}' > ${WORK_ROOT}/global_pull_secret.cfg
+
+    oc set data secret/pull-secret-backup \
+      -n openshift-config \
+      --from-file=.dockerconfigjson=${WORK_ROOT}/global_pull_secret.cfg
 
     oc registry login \
       --registry="${DOCKER_SERVER}" \
