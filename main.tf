@@ -12,7 +12,7 @@ locals {
     docker_server = var.docker_server
     secret_name = local.secret_name
   }
-  layer = "services"
+  layer = "infrastructure"
   type  = "base"
   application_branch = "main"
   namespace = var.namespace
