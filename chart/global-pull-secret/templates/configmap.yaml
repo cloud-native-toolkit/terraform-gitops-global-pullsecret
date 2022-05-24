@@ -12,7 +12,7 @@ data:
       -n openshift-config \
       --template='{{ "{{" }}index .data ".dockerconfigjson" | base64decode {{ "}}" }}' > ${WORK_ROOT}/global_pull_secret.cfg
 
-    echo "global_pull_secret:
+    echo "global_pull_secret:"
     cat ${WORK_ROOT}/global_pull_secret.cfg
 
     echo "DOCKER_SERVER: $DOCKER_SERVER"
