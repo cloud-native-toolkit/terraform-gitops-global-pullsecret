@@ -94,14 +94,10 @@ fi
 
 oc wait --for=condition=complete job/global-pull-secret-append -n "${NAMESPACE}" --timeout=120s
 
-oc get secret/pull-secret \
-      -n openshift-config \
-      --template='{{index .data ".dockerconfigjson" | base64decode}}' > ./global_pull_secret.cfg
+oc extract secret/pull-secret \
+      -n openshift-config
 
-#echo "Pull secret:"
-#cat ./global_pull_secret.cfg
-
-if grep -R "test-server" ./global_pull_secret.cfg
+if grep -R "test-server" .dockerconfigjson
 then
   echo "test-server key was found"
 else

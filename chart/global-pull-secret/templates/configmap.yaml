@@ -11,13 +11,6 @@ data:
     oc extract secret/pull-secret \
       -n openshift-config
 
-    echo "global_pull_secret:"
-    cat ${WORK_ROOT}/.dockerconfigjson
-
-    echo "DOCKER_SERVER: $DOCKER_SERVER"
-    echo "DOCKER_USERNAME: $DOCKER_USERNAME"
-    echo "DOCKER_PASSWORD: $DOCKER_PASSWORD"
-
     oc registry login \
       --registry="${DOCKER_SERVER}" \
       --auth-basic="${DOCKER_USERNAME}:${DOCKER_PASSWORD}" \
