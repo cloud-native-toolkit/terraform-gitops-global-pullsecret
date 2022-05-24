@@ -9,7 +9,7 @@ spec:
       volumes:
         - name: scripts
           configMap:
-            name: global-pull-secret-append-job
+            name: global-pull-secret-append-config
             defaultMode: 0777
         - name: ephemeral
           emptyDir: {}
