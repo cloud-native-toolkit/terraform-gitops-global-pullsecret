@@ -10,7 +10,7 @@ mkdir -p "${DEST_DIR}"
 
 
 kubectl create secret generic -n "${NAMESPACE}" $NAME \
-  --from-literal=DOCKER_PASSWORD="${DOCKER_PASSWORD}" \
+  --from-literal=docker_password="${DOCKER_PASSWORD}" \
   --dry-run=client \
   -o yaml > "${DEST_DIR}/secret.yaml"
   
