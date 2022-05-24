@@ -60,8 +60,8 @@ if [[ $count -eq 20 ]]; then
   echo "Timed out waiting for namespace: ${NAMESPACE}"
   exit 1
 else
-  echo "Found namespace: ${NAMESPACE}. Sleeping for 30 seconds to wait for everything to settle down"
-  sleep 30
+  echo "Found namespace: ${NAMESPACE}. Sleeping for 60 seconds to wait for everything to settle down"
+  sleep 60
 fi
 
 GLOBAL_SECRET="pull-secret"

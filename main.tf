@@ -5,7 +5,6 @@ locals {
   bin_dir       = module.setup_clis.bin_dir
   yaml_dir      = "${path.cwd}/.tmp/${local.name}/chart/global-pull-secret"
   service_url   = "http://${local.name}.${var.namespace}"
-  namesspace    = "openshift-config"
   tmp_dir      = "${path.cwd}/.tmp/tmp"
 
   values_content = {
@@ -36,7 +35,7 @@ resource null_resource create_yaml {
 
 resource null_resource create_secrets {
   provisioner "local-exec" {
-    command = "${path.module}/scripts/create-secrets.sh '${local.secret_name}' '${var.namespace}' '${local.tmp_dir}'"
+    command = "${path.module}/scripts/create-secrets.sh '${local.secret_name}' '${local.tmp_dir}'"
 
     environment = {
       DOCKER_PASSWORD = var.docker_password
