@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: global-pull-secret-append
+  labels:
+    {{- include "global-pull-secret.labels" . | nindent 4 }}
+spec:
+  template:
+    spec:
+      serviceAccountName: global-pull-secret-sa
+      restartPolicy: Never
+      volumes:
+        - name: scripts
+          configMap:
+            name: global-pull-secret-append-config
+            defaultMode: 0777
+        - name: ephemeral
+          emptyDir: {}
+      containers:
+        - name: job
+          image: "quay.io/ibmgaragecloud/cli-tools:latest"
+          volumeMounts:
+            - mountPath: /scripts
+              name: scripts
+            - mountPath: "/home/devops"
+              name: ephemeral
+          env:
+            - name: DOCKER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret_name }}
+                  key: docker-password
+                  optional: false
+            - name: DOCKER_USERNAME
+              value: {{ .Values.docker_username }}
+            - name: DOCKER_SERVER
+              value: {{ .Values.docker_server }}
+
+          command:
+            - /bin/sh
+          args:
+            - -c
+            - /scripts/global-pull-secret-append.sh

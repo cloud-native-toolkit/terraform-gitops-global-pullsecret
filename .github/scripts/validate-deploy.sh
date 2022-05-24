@@ -60,25 +60,50 @@ if [[ $count -eq 20 ]]; then
   echo "Timed out waiting for namespace: ${NAMESPACE}"
   exit 1
 else
-  echo "Found namespace: ${NAMESPACE}. Sleeping for 30 seconds to wait for everything to settle down"
-  sleep 30
+  echo "Found namespace: ${NAMESPACE}. Sleeping for 60 seconds to wait for everything to settle down"
+  sleep 60
 fi
 
-DEPLOYMENT="${COMPONENT_NAME}-${BRANCH}"
+GLOBAL_SECRET="pull-secret"
+OPENSHIFT_NAMESPACE="openshift-config"
 count=0
-until kubectl get deployment "${DEPLOYMENT}" -n "${NAMESPACE}" || [[ $count -eq 20 ]]; do
-  echo "Waiting for deployment/${DEPLOYMENT} in ${NAMESPACE}"
+until kubectl get secret "${GLOBAL_SECRET}" -n "${OPENSHIFT_NAMESPACE}" || [[ $count -eq 20 ]]; do
+  echo "Waiting for secret/${GLOBAL_SECRET} in ${OPENSHIFT_NAMESPACE}"
   count=$((count + 1))
   sleep 15
 done
 
 if [[ $count -eq 20 ]]; then
-  echo "Timed out waiting for deployment/${DEPLOYMENT} in ${NAMESPACE}"
-  kubectl get all -n "${NAMESPACE}"
+  echo "Timed out waiting for deployment/${GLOBAL_SECRET} in ${OPENSHIFT_NAMESPACE}"
+  kubectl get secret -n "${OPENSHIFT_NAMESPACE}"
   exit 1
 fi
 
-kubectl rollout status "deployment/${DEPLOYMENT}" -n "${NAMESPACE}" || exit 1
+count=0
+until kubectl get job "global-pull-secret-append" -n "${NAMESPACE}" || [[ $count -eq 20 ]]; do
+  echo "Waiting for job/global-pull-secret-append in ${NAMESPACE}"
+  count=$((count + 1))
+  sleep 15
+done
+
+if [[ $count -eq 20 ]]; then
+  echo "Timed out waiting for job/global-pull-secret-append in ${NAMESPACE}"
+  kubectl get job "global-pull-secret-append" -n "${NAMESPACE}"
+  exit 1
+fi
+
+oc wait --for=condition=complete job/global-pull-secret-append -n "${NAMESPACE}" --timeout=120s
+
+oc extract secret/pull-secret \
+      -n openshift-config
+
+if grep -R "test-server" .dockerconfigjson
+then
+  echo "test-server key was found"
+else
+  echo "test-server key was NOT found"
+  exit 1
+fi
 
 cd ..
 rm -rf .testrepo
