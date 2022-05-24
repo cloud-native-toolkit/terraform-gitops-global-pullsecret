@@ -2,6 +2,8 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: global-pull-secret-append
+  labels:
+    {{- include "global-pull-secret.labels" . | nindent 4 }}
 spec:
   template:
     spec:

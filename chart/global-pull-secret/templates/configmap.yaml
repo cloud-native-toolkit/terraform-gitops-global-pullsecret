@@ -2,6 +2,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: global-pull-secret-append-config
+  labels:
+    {{- include "global-pull-secret.labels" . | nindent 4 }}
 data:
   global-pull-secret-append.sh: |
     #!/bin/bash
