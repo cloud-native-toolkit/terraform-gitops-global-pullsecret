@@ -46,7 +46,6 @@ resource gitops_seal_secrets secrets {
   dest_dir      = "${local.yaml_dir}/templates"
   kubeseal_cert = var.kubeseal_cert
   tmp_dir = local.tmp_dir
-  label         = local.secret_name
 }
 
 
