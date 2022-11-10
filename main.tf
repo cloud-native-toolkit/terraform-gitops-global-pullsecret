@@ -54,6 +54,7 @@ module seal_secrets {
   dest_dir      = "${local.yaml_dir}/templates"
   kubeseal_cert = var.kubeseal_cert
   label         = local.secret_name
+    bin_dir = local.bin_dir
 }
 
 
