@@ -4,6 +4,7 @@ locals {
   name          = local.secret_name
   yaml_dir      = "${path.cwd}/.tmp/${local.name}/chart/global-pull-secret"
   service_url   = "http://${local.name}.${var.namespace}"
+  source_dir      = "${path.cwd}/.tmp/tmp"
   tmp_dir      = "${path.cwd}/.tmp/tmp"
 
   values_content = {
@@ -30,7 +31,7 @@ resource null_resource create_yaml {
 
 resource null_resource create_secrets {
   provisioner "local-exec" {
-    command = "${path.module}/scripts/create-secrets.sh '${local.secret_name}' '${local.tmp_dir}'"
+    command = "${path.module}/scripts/create-secrets.sh '${local.secret_name}' '${local.source_dir}'"
 
     environment = {
       DOCKER_PASSWORD = var.docker_password
@@ -42,7 +43,7 @@ resource null_resource create_secrets {
 resource gitops_seal_secrets secrets {
   depends_on = [null_resource.create_secrets,null_resource.create_yaml]
 
-  source_dir    = local.tmp_dir
+  source_dir    = local.source_dir
   dest_dir      = "${local.yaml_dir}/templates"
   kubeseal_cert = var.kubeseal_cert
   tmp_dir = local.tmp_dir
