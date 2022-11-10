@@ -4,7 +4,7 @@ locals {
   name          = local.secret_name
   yaml_dir      = "${path.cwd}/.tmp/${local.name}/chart/global-pull-secret"
   service_url   = "http://${local.name}.${var.namespace}"
-  source_dir      = "${path.cwd}/.tmp/tmp"
+  source_dir      = "${path.cwd}/.tmp/source"
   tmp_dir      = "${path.cwd}/.tmp/tmp"
 
   values_content = {
