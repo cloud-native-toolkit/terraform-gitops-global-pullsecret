@@ -60,7 +60,8 @@ module seal_secrets {
 }
 
 resource gitops_module setup_gitops {
-  depends_on = [null_resource.create_yaml, gitops_seal_secrets.secrets]
+  # depends_on = [null_resource.create_yaml, gitops_seal_secrets.secrets]
+  depends_on = [null_resource.create_yaml, module.seal_secrets]
   name = local.name
   namespace = local.namespace
   content_dir = local.yaml_dir
